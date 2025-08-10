@@ -301,4 +301,45 @@ document.addEventListener('DOMContentLoaded', function() {
             globalChordTooltip.style.display = 'none';
         }
     });
+
+    // Dark Mode Toggle Logic
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    // Check for saved dark mode preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark-mode') {
+        body.classList.add('dark-mode');
+    } else if (savedTheme === 'light-mode') {
+        body.classList.remove('dark-mode');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // If no saved preference, check system preference
+        body.classList.add('dark-mode');
+    }
+
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+        if (body.classList.contains('dark-mode')) {
+            body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light-mode'); // Save preference
+        } else {
+            body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark-mode'); // Save preference
+        }
+    }
+
+    // Event listener for the toggle button
+    darkModeToggle.addEventListener('click', toggleDarkMode);
+
+    // Listen for changes in system color scheme preference
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+        // Only update if no manual preference is set
+        if (!localStorage.getItem('theme')) {
+            if (event.matches) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        }
+    });
 });

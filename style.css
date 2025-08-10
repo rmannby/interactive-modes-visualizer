@@ -368,3 +368,285 @@ h1 {
         font-size: 0.75rem;
     }
 }
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: #ecf0f1;
+    }
+
+    header {
+        background: rgba(44, 62, 80, 0.95);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    h1 {
+        color: #ecf0f1;
+    }
+
+    .root-selector label {
+        color: #bdc3c7;
+    }
+
+    .root-selector select {
+        border: 2px solid #3498db;
+        background: #34495e;
+        color: #ecf0f1;
+    }
+
+    .root-selector select:hover {
+        border-color: #2980b9;
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+    }
+
+    .mode-card {
+        background: #34495e;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .mode-card:hover {
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .mode-info {
+        background: rgba(52, 73, 94, 0.95);
+    }
+
+    .scale-notes .note,
+    .degree {
+        background: #2c3e50;
+        color: #ecf0f1;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .note.root {
+        background: #3498db;
+        color: white;
+    }
+
+    .degree.altered {
+        border-color: #e74c3c;
+        color: #e74c3c;
+    }
+
+    .interval-pattern {
+        background: rgba(0, 0, 0, 0.3);
+        color: #ecf0f1;
+    }
+
+    .interval-pattern span {
+        color: #3498db;
+    }
+
+    .chord {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    .chord:hover {
+        background: #3498db;
+        color: white;
+    }
+
+    .chord-tooltip {
+        background: #ecf0f1;
+        color: #333;
+    }
+
+    .fretboard {
+        background: rgba(52, 73, 94, 0.95);
+    }
+
+    .fretboard-title {
+        color: #ecf0f1;
+    }
+
+    .fret {
+        background: #2c3e50;
+        border: 1px solid #34495e;
+    }
+
+    .fret.active {
+        background: #3498db;
+        color: white;
+    }
+
+    .fret.root-fret {
+        background: #2980b9;
+        color: white;
+    }
+
+    .fret-number span {
+        color: #bdc3c7;
+    }
+
+    .description {
+        background: rgba(52, 73, 94, 0.9);
+        color: #bdc3c7;
+    }
+
+    /* Custom scrollbar styling for dark mode */
+    .scale-notes::-webkit-scrollbar-track,
+    .scale-degrees::-webkit-scrollbar-track,
+    .chord-progression::-webkit-scrollbar-track,
+    .mode-info::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .scale-notes::-webkit-scrollbar-thumb,
+    .scale-degrees::-webkit-scrollbar-thumb,
+    .chord-progression::-webkit-scrollbar-thumb,
+    .mode-info::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .scale-notes::-webkit-scrollbar-thumb:hover,
+    .scale-degrees::-webkit-scrollbar-thumb:hover,
+    .chord-progression::-webkit-scrollbar-thumb:hover,
+    .mode-info::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* Manual dark mode toggle */
+body.dark-mode {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #ecf0f1;
+}
+
+body.dark-mode header {
+    background: rgba(44, 62, 80, 0.95);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode h1 {
+    color: #ecf0f1;
+}
+
+body.dark-mode .root-selector label {
+    color: #ecf0f1;
+}
+
+body.dark-mode .root-selector select {
+    border: 2px solid #3498db;
+    background: #34495e;
+    color: #ecf0f1;
+}
+
+body.dark-mode .root-selector select:hover {
+    border-color: #2980b9;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+body.dark-mode .mode-card {
+    background: #34495e;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .mode-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .mode-info {
+    background: rgba(52, 73, 94, 0.95);
+}
+
+body.dark-mode .scale-notes .note,
+body.dark-mode .degree {
+    background: #2c3e50;
+    color: #ecf0f1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .note.root {
+    background: #3498db;
+    color: white;
+}
+
+body.dark-mode .degree.altered {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+body.dark-mode .interval-pattern {
+    background: rgba(0, 0, 0, 0.3);
+    color: #ecf0f1;
+}
+
+body.dark-mode .interval-pattern span {
+    color: #3498db;
+}
+
+body.dark-mode .chord {
+    background: #2c3e50;
+    color: #ecf0f1;
+}
+
+body.dark-mode .chord:hover {
+    background: #3498db;
+    color: white;
+}
+
+body.dark-mode .chord-tooltip {
+    background: #ecf0f1;
+    color: #333;
+}
+
+body.dark-mode .fretboard {
+    background: rgba(52, 73, 94, 0.95);
+}
+
+body.dark-mode .fretboard-title {
+    color: #ecf0f1;
+}
+
+body.dark-mode .fret {
+    background: #2c3e50;
+    border: 1px solid #34495e;
+}
+
+body.dark-mode .fret.active {
+    background: #3498db;
+    color: white;
+}
+
+body.dark-mode .fret.root-fret {
+    background: #2980b9;
+    color: white;
+}
+
+body.dark-mode .fret-number span {
+    color: #bdc3c7;
+}
+
+body.dark-mode .description {
+    background: rgba(52, 73, 94, 0.9);
+    color: #bdc3c7;
+}
+
+/* Custom scrollbar styling for dark mode */
+body.dark-mode .scale-notes::-webkit-scrollbar-track,
+body.dark-mode .scale-degrees::-webkit-scrollbar-track,
+body.dark-mode .chord-progression::-webkit-scrollbar-track,
+body.dark-mode .mode-info::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .scale-notes::-webkit-scrollbar-thumb,
+body.dark-mode .scale-degrees::-webkit-scrollbar-thumb,
+body.dark-mode .chord-progression::-webkit-scrollbar-thumb,
+body.dark-mode .mode-info::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+body.dark-mode .scale-notes::-webkit-scrollbar-thumb:hover,
+body.dark-mode .scale-degrees::-webkit-scrollbar-thumb:hover,
+body.dark-mode .chord-progression::-webkit-scrollbar-thumb:hover,
+body.dark-mode .mode-info::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+body.dark-mode .scale-degrees-label {
+    color: #ecf0f1;
+}
