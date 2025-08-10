@@ -1,0 +1,391 @@
+/* style.css - Styles for Interactive Modes of Major */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.root-selector {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.root-selector label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.root-selector select {
+    font-size: 1.1rem;
+    padding: 10px 20px;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.root-selector select:hover {
+    border-color: #764ba2;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 20px;
+}
+
+.mode-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Mode color themes */
+.mode-card.major { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.mode-card.dorian { background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%); }
+.mode-card.phrygian { background: linear-gradient(135deg, #fddb92 0%, #d1fdff 100%); }
+.mode-card.lydian { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
+.mode-card.mixolydian { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.mode-card.aeolian { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.mode-card.locrian { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+
+.mode-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.mode-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mode-formula {
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.mode-info {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow-x: auto;
+}
+
+.scale-notes {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.note {
+    background: white;
+    color: #333;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 35px;
+    text-align: center;
+}
+
+.note.root {
+    background: #667eea;
+    color: white;
+}
+
+.scale-degrees {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.scale-degrees-label {
+    font-weight: 600;
+    color: #333;
+    margin-right: 5px;
+}
+
+.degree {
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 2px solid transparent;
+}
+
+.degree.altered {
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.interval-pattern {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    font-weight: 600;
+    color: #333;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.interval-pattern span {
+    color: #667eea;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+.chord-progression {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.chord-progression strong {
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.chord {
+    display: inline-block;
+    margin: 5px;
+    padding: 6px 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chord:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chord-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chord-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+}
+
+.chord:hover .chord-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.fretboard {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.fretboard-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.fretboard-diagram {
+    display: grid;
+    grid-template-columns: 30px repeat(12, 40px);
+    gap: 1px;
+    font-size: 0.85rem;
+    min-width: 550px;
+}
+
+.string-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #666;
+}
+
+.fret {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    position: relative;
+}
+
+.fret.active {
+    background: #667eea;
+    color: white;
+    font-weight: bold;
+}
+
+.fret.root-fret {
+    background: #764ba2;
+    color: white;
+    font-weight: bold;
+}
+
+.fret-number {
+    grid-column: span 13;
+    display: grid;
+    grid-template-columns: 30px repeat(12, 40px);
+    gap: 1px;
+}
+
+.fret-number span {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.description {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Custom scrollbar styling */
+.scale-notes::-webkit-scrollbar,
+.scale-degrees::-webkit-scrollbar,
+.chord-progression::-webkit-scrollbar,
+.mode-info::-webkit-scrollbar {
+    height: 6px;
+}
+
+.scale-notes::-webkit-scrollbar-track,
+.scale-degrees::-webkit-scrollbar-track,
+.chord-progression::-webkit-scrollbar-track,
+.mode-info::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.scale-notes::-webkit-scrollbar-thumb,
+.scale-degrees::-webkit-scrollbar-thumb,
+.chord-progression::-webkit-scrollbar-thumb,
+.mode-info::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.scale-notes::-webkit-scrollbar-thumb:hover,
+.scale-degrees::-webkit-scrollbar-thumb:hover,
+.chord-progression::-webkit-scrollbar-thumb:hover,
+.mode-info::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .modes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .fretboard-diagram {
+        font-size: 0.75rem;
+    }
+}
