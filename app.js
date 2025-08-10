@@ -210,9 +210,8 @@ function generateModeCard(rootNote, mode, modeIndex) {
                 <div class="chord-progression">
                     <strong>Chords:</strong>
                     ${chords.map((chord, i) => `
-                        <span class="chord">
+                        <span class="chord" data-mode-index="${modeIndex}" data-chord-index="${i}">
                             ${chord}
-                            <span class="chord-tooltip">Triad: ${chordTriads[i].join(' - ')}</span>
                         </span>
                     `).join('')}
                 </div>
@@ -272,4 +271,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial render
     updateModes();
+
+    const globalChordTooltip = document.getElementById('global-chord-tooltip');
+
+    document.addEventListener('mouseover', function(event) {
+        if (event.target.classList.contains('chord')) {
+            const chordElement = event.target;
+            const modeIndex = parseInt(chordElement.dataset.modeIndex);
+            const chordIndex = parseInt(chordElement.dataset.chordIndex);
+
+            const mode = modes[modeIndex];
+            const rootNote = document.getElementById('rootNote').value;
+            const scaleNotes = getScaleNotes(rootNote, mode.intervals);
+            const chordTriads = scaleNotes.map((note, i) => getChordTriad(note, mode.chordTypes[i], scaleNotes));
+
+            globalChordTooltip.textContent = `Triad: ${chordTriads[chordIndex].join(' - ')}`;
+            globalChordTooltip.style.display = 'block';
+
+            const chordRect = chordElement.getBoundingClientRect();
+            const tooltipRect = globalChordTooltip.getBoundingClientRect();
+
+            globalChordTooltip.style.left = `${chordRect.left + (chordRect.width / 2) - (tooltipRect.width / 2)}px`;
+            globalChordTooltip.style.top = `${chordRect.top - tooltipRect.height - 10}px`;
+        }
+    });
+
+    document.addEventListener('mouseout', function(event) {
+        if (event.target.classList.contains('chord')) {
+            globalChordTooltip.style.display = 'none';
+        }
+    });
 });
