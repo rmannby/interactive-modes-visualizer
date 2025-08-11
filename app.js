@@ -90,6 +90,16 @@ const modes = [
 const guitarStrings = ['E', 'B', 'G', 'D', 'A', 'E'];
 const stringNoteIndices = [4, 11, 7, 2, 9, 4]; // E, B, G, D, A, E
 
+// Data för pianotangenter
+const pianoKeys = [
+    { note: 'C', color: 'white' }, { note: 'C#', color: 'black' },
+    { note: 'D', color: 'white' }, { note: 'D#', color: 'black' },
+    { note: 'E', color: 'white' }, { note: 'F', color: 'white' },
+    { note: 'F#', color: 'black' }, { note: 'G', color: 'white' },
+    { note: 'G#', color: 'black' }, { note: 'A', color: 'white' },
+    { note: 'A#', color: 'black' }, { note: 'B', color: 'white' }
+];
+
 // Utility functions
 function getNoteIndex(note) {
     return notes.indexOf(note.replace('b', '').replace('#', notes.includes(note) ? '' : '#'));
@@ -120,19 +130,13 @@ function getChordTriad(rootNote, chordType, scaleNotes) {
 function generateFretboard(rootNote, intervals, modeIndex) {
     const rootIndex = getNoteIndex(rootNote);
     const scaleNotes = intervals.map(interval => (rootIndex + interval) % 12);
-
     let html = `<div class="fretboard-title">Guitar Fretboard (first ${FRET_COUNT} frets)</div>`;
     html += `<div class="fretboard-diagram" id="fretboard-${modeIndex}">`;
-
-    // Add fret numbers
-    html += '<div class="fret-number">';
-    html += '<span></span>';
+    html += '<div class="fret-number"><span></span>';
     for (let fret = 0; fret <= FRET_COUNT; fret++) {
         html += `<span>${fret}</span>`;
     }
     html += '</div>';
-
-    // Add strings
     guitarStrings.forEach((string, stringIndex) => {
         html += `<div class="string-label">${string}</div>`;
         for (let fret = 0; fret <= FRET_COUNT; fret++) {
@@ -144,7 +148,6 @@ function generateFretboard(rootNote, intervals, modeIndex) {
             html += `<div class="${className}" data-note-index="${noteIndex}">${isScaleNote ? noteName : ''}</div>`;
         }
     });
-
     html += '</div>';
     return html;
 }
@@ -154,14 +157,12 @@ function updateFretboard(rootNote, intervals, modeIndex) {
     const scaleNotes = intervals.map(interval => (rootIndex + interval) % 12);
     const fretboard = document.getElementById(`fretboard-${modeIndex}`);
     if (!fretboard) return;
-
     const frets = fretboard.querySelectorAll('.fret');
     frets.forEach(fret => {
         const noteIndex = parseInt(fret.getAttribute('data-note-index'));
         const noteName = notes[noteIndex];
         const isScaleNote = scaleNotes.includes(noteIndex);
         const isRoot = noteIndex === rootIndex;
-
         fret.className = 'fret';
         if (isRoot) {
             fret.classList.add('root-fret');
@@ -172,21 +173,59 @@ function updateFretboard(rootNote, intervals, modeIndex) {
     });
 }
 
+// Funktioner för att generera och uppdatera pianot
+function generatePianoKeyboard(rootNote, intervals, modeIndex) {
+    const scaleNotes = getScaleNotes(rootNote, intervals);
+    let html = `<div class="piano-title">Piano Keyboard</div>`;
+    html += `<div class="piano-keyboard" id="piano-keys-${modeIndex}">`;
+    for (let octave = 0; octave < 2; octave++) {
+        pianoKeys.forEach(key => {
+            const isScaleNote = scaleNotes.includes(key.note);
+            const isRoot = key.note === rootNote;
+            let className = `key ${key.color}`;
+            if (isScaleNote) className += ' active';
+            if (isRoot) className += ' root';
+            html += `<div class="${className}" data-note="${key.note}"></div>`;
+        });
+    }
+    html += `</div>`;
+    return html;
+}
+
+// KORRIGERAD FUNKTION
+function updatePianoKeyboard(rootNote, intervals, modeIndex) {
+    const scaleNotes = getScaleNotes(rootNote, intervals);
+    const piano = document.getElementById(`piano-keys-${modeIndex}`);
+    if (!piano) return;
+
+    const keys = piano.querySelectorAll('.key');
+    keys.forEach(key => {
+        const keyNote = key.dataset.note;
+        
+        // Återställ klasser genom att först ta bort 'active' och 'root'
+        key.classList.remove('active', 'root');
+
+        // Lägg till klasser på nytt baserat på den nya skalan
+        const isScaleNote = scaleNotes.includes(keyNote);
+        if (isScaleNote) {
+            key.classList.add('active');
+        }
+        const isRoot = keyNote === rootNote;
+        if (isRoot) {
+            key.classList.add('root');
+        }
+    });
+}
 
 // Mode card generation
 function generateModeCard(rootNote, mode, modeIndex) {
     const scaleNotes = getScaleNotes(rootNote, mode.intervals);
     const chords = scaleNotes.map((note, i) => getChordName(note, mode.chordTypes[i]));
-    const chordTriads = scaleNotes.map((note, i) => getChordTriad(note, mode.chordTypes[i], scaleNotes));
-
-    // Parse scale degrees to identify altered ones
     const degreesArray = mode.degrees.split('-');
     const degreeElements = degreesArray.map(degree => {
         const isAltered = degree.includes('♭') || degree.includes('#');
         return `<span class="degree ${isAltered ? 'altered' : ''}">${degree}</span>`;
     }).join('');
-
-    const modeName = mode.name.replace(/[()]/g, '').replace(/ /g, '_');
 
     let html = `
         <div class="mode-card ${mode.color}" id="mode-${modeIndex}">
@@ -219,6 +258,9 @@ function generateModeCard(rootNote, mode, modeIndex) {
             <div class="fretboard">
                 ${generateFretboard(rootNote, mode.intervals, modeIndex)}
             </div>
+            <div class="piano-container" id="piano-${modeIndex}">
+                ${generatePianoKeyboard(rootNote, mode.intervals, modeIndex)}
+            </div>
             <div class="description">${mode.description}</div>
         </div>
     `;
@@ -238,7 +280,6 @@ function updateModes() {
         modes.forEach((mode, index) => {
             const scaleNotes = getScaleNotes(rootNote, mode.intervals);
             const chords = scaleNotes.map((note, i) => getChordName(note, mode.chordTypes[i]));
-            const chordTriads = scaleNotes.map((note, i) => getChordTriad(note, mode.chordTypes[i], scaleNotes));
             const degreesArray = mode.degrees.split('-');
             const degreeElements = degreesArray.map(degree => {
                 const isAltered = degree.includes('♭') || degree.includes('#');
@@ -250,26 +291,26 @@ function updateModes() {
                 `<span class="note ${i === 0 ? 'root' : ''}">${note}</span>`
             ).join('');
             modeCard.querySelector('.scale-degrees').innerHTML = `<span class="scale-degrees-label">Scale Degrees:</span> ${degreeElements}`;
+            
+            // KORRIGERAD RAD: Säkerställer att data-attribut finns kvar efter uppdatering
             modeCard.querySelector('.chord-progression').innerHTML = `
                 <strong>Chords:</strong>
                 ${chords.map((chord, i) => `
-                    <span class="chord">
+                    <span class="chord" data-mode-index="${index}" data-chord-index="${i}">
                         ${chord}
-                        <span class="chord-tooltip">Triad: ${chordTriads[i].join(' - ')}</span>
                     </span>
                 `).join('')}
             `;
+            
             updateFretboard(rootNote, mode.intervals, index);
+            updatePianoKeyboard(rootNote, mode.intervals, index);
         });
     }
 }
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    // Set up event listener for root note selector
     document.getElementById('rootNote').addEventListener('change', updateModes);
-
-    // Initial render
     updateModes();
 
     const globalChordTooltip = document.getElementById('global-chord-tooltip');
@@ -279,6 +320,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const chordElement = event.target;
             const modeIndex = parseInt(chordElement.dataset.modeIndex);
             const chordIndex = parseInt(chordElement.dataset.chordIndex);
+
+            if (isNaN(modeIndex) || isNaN(chordIndex)) return;
 
             const mode = modes[modeIndex];
             const rootNote = document.getElementById('rootNote').value;
@@ -302,38 +345,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Dark Mode Toggle Logic
     const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
-
-    // Check for saved dark mode preference
     const savedTheme = localStorage.getItem('theme');
+
     if (savedTheme === 'dark-mode') {
         body.classList.add('dark-mode');
     } else if (savedTheme === 'light-mode') {
         body.classList.remove('dark-mode');
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // If no saved preference, check system preference
         body.classList.add('dark-mode');
     }
 
-    // Function to toggle dark mode
-    function toggleDarkMode() {
-        if (body.classList.contains('dark-mode')) {
-            body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light-mode'); // Save preference
-        } else {
-            body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark-mode'); // Save preference
-        }
-    }
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark-mode' : 'light-mode');
+    });
 
-    // Event listener for the toggle button
-    darkModeToggle.addEventListener('click', toggleDarkMode);
-
-    // Listen for changes in system color scheme preference
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-        // Only update if no manual preference is set
         if (!localStorage.getItem('theme')) {
             if (event.matches) {
                 body.classList.add('dark-mode');

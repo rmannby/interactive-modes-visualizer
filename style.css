@@ -127,40 +127,24 @@ h1 {
     margin-bottom: 15px;
 }
 
-.scale-notes {
+/* Uppdaterade stilar för toner, skalsteg och ackord */
+.scale-notes,
+.scale-degrees,
+.chord-progression {
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 5px;
-}
-
-.note {
-    background: white;
-    color: #333;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-weight: 600;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    min-width: 35px;
-    text-align: center;
-}
-
-.note.root {
-    background: #667eea;
-    color: white;
-}
-
-.scale-degrees {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    flex-wrap: nowrap;
+    gap: 6px;
     align-items: center;
-    overflow-x: auto;
+    flex-wrap: wrap;
     padding-bottom: 5px;
+}
+
+.scale-notes { margin-bottom: 10px; }
+.scale-degrees { margin-top: 10px; margin-bottom: 10px; }
+
+/* Specifik justering för ackord */
+.chord-progression {
+    gap: 4px;
+    margin-top: 10px;
 }
 
 .scale-degrees-label {
@@ -169,20 +153,55 @@ h1 {
     margin-right: 5px;
 }
 
+/* Uppdaterade piller-stilar */
+.note,
+.degree,
+.chord {
+    padding: 5px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.note {
+    background: white;
+    color: #333;
+    min-width: 30px;
+}
+
+.note.root {
+    background: #667eea;
+    color: white;
+}
+
 .degree {
     background: rgba(255, 255, 255, 0.8);
     color: #333;
-    padding: 6px 10px;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border: 2px solid transparent;
 }
 
 .degree.altered {
     border-color: #e74c3c;
     color: #e74c3c;
+}
+
+.chord {
+    display: inline-block;
+    padding: 5px 7px; /* Smalare padding */
+    background: #f0f0f0;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chord:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
 }
 
 .interval-pattern {
@@ -202,40 +221,6 @@ h1 {
     letter-spacing: 2px;
 }
 
-.chord-progression {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 5px;
-}
-
-.chord-progression strong {
-    margin-right: 10px;
-    white-space: nowrap;
-}
-
-.chord {
-    display: inline-block;
-    margin: 5px;
-    padding: 6px 10px;
-    background: #f0f0f0;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.chord:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1001;
-}
-
 .chord-tooltip {
     background: #333;
     color: white;
@@ -249,11 +234,11 @@ h1 {
     display: none;
 }
 
+/* Uppdaterad greppbräda */
 .fretboard {
     background: rgba(255, 255, 255, 0.95);
     padding: 15px;
     border-radius: 8px;
-    overflow-x: auto;
 }
 
 .fretboard-title {
@@ -264,10 +249,9 @@ h1 {
 
 .fretboard-diagram {
     display: grid;
-    grid-template-columns: 30px repeat(12, 40px);
+    grid-template-columns: 30px repeat(13, 28px);
     gap: 1px;
     font-size: 0.85rem;
-    min-width: 550px;
 }
 
 .string-label {
@@ -301,9 +285,9 @@ h1 {
 }
 
 .fret-number {
-    grid-column: span 13;
+    grid-column: span 14;
     display: grid;
-    grid-template-columns: 30px repeat(12, 40px);
+    grid-template-columns: 30px repeat(13, 28px);
     gap: 1px;
 }
 
@@ -323,330 +307,114 @@ h1 {
     line-height: 1.5;
 }
 
-/* Custom scrollbar styling */
-.scale-notes::-webkit-scrollbar,
-.scale-degrees::-webkit-scrollbar,
-.chord-progression::-webkit-scrollbar,
+/* Stilar för pianot */
+.piano-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    overflow-x: auto;
+}
+
+.piano-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.piano-keyboard {
+    display: flex;
+    position: relative;
+    height: 120px;
+}
+
+.key {
+    border: 1px solid #333;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
+}
+
+.key.white {
+    height: 100%;
+    width: 28px;
+    background: white;
+    z-index: 1;
+}
+
+.key.black {
+    height: 65%;
+    width: 16px;
+    background: black;
+    position: relative;
+    margin-left: -8px;
+    margin-right: -8px;
+    z-index: 2;
+}
+
+.key.active {
+    background: #89f7fe;
+}
+
+.key.root {
+    background: #fda085;
+}
+
+/* Borttagna/justerade scrollbar-regler */
+.piano-container::-webkit-scrollbar,
 .mode-info::-webkit-scrollbar {
     height: 6px;
 }
 
-.scale-notes::-webkit-scrollbar-track,
-.scale-degrees::-webkit-scrollbar-track,
-.chord-progression::-webkit-scrollbar-track,
+.piano-container::-webkit-scrollbar-track,
 .mode-info::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
     border-radius: 3px;
 }
 
-.scale-notes::-webkit-scrollbar-thumb,
-.scale-degrees::-webkit-scrollbar-thumb,
-.chord-progression::-webkit-scrollbar-thumb,
+.piano-container::-webkit-scrollbar-thumb,
 .mode-info::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3);
     border-radius: 3px;
 }
 
-.scale-notes::-webkit-scrollbar-thumb:hover,
-.scale-degrees::-webkit-scrollbar-thumb:hover,
-.chord-progression::-webkit-scrollbar-thumb:hover,
-.mode-info::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.5);
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-    
-    .modes-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .fretboard-diagram {
-        font-size: 0.75rem;
-    }
+    h1 { font-size: 1.8rem; }
+    .modes-grid { grid-template-columns: 1fr; }
+    .fretboard-diagram { font-size: 0.75rem; }
 }
 
 /* Dark Mode */
-@media (prefers-color-scheme: dark) {
-    body {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-        color: #ecf0f1;
-    }
-
-    header {
-        background: rgba(44, 62, 80, 0.95);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-        color: #ecf0f1;
-    }
-
-    .root-selector label {
-        color: #bdc3c7;
-    }
-
-    .root-selector select {
-        border: 2px solid #3498db;
-        background: #34495e;
-        color: #ecf0f1;
-    }
-
-    .root-selector select:hover {
-        border-color: #2980b9;
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-    }
-
-    .mode-card {
-        background: #34495e;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .mode-card:hover {
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-    }
-
-    .mode-info {
-        background: rgba(52, 73, 94, 0.95);
-    }
-
-    .scale-notes .note,
-    .degree {
-        background: #2c3e50;
-        color: #ecf0f1;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .note.root {
-        background: #3498db;
-        color: white;
-    }
-
-    .degree.altered {
-        border-color: #e74c3c;
-        color: #e74c3c;
-    }
-
-    .interval-pattern {
-        background: rgba(0, 0, 0, 0.3);
-        color: #ecf0f1;
-    }
-
-    .interval-pattern span {
-        color: #3498db;
-    }
-
-    .chord {
-        background: #2c3e50;
-        color: #ecf0f1;
-    }
-
-    .chord:hover {
-        background: #3498db;
-        color: white;
-    }
-
-    .chord-tooltip {
-        background: #ecf0f1;
-        color: #333;
-    }
-
-    .fretboard {
-        background: rgba(52, 73, 94, 0.95);
-    }
-
-    .fretboard-title {
-        color: #ecf0f1;
-    }
-
-    .fret {
-        background: #2c3e50;
-        border: 1px solid #34495e;
-    }
-
-    .fret.active {
-        background: #3498db;
-        color: white;
-    }
-
-    .fret.root-fret {
-        background: #2980b9;
-        color: white;
-    }
-
-    .fret-number span {
-        color: #bdc3c7;
-    }
-
-    .description {
-        background: rgba(52, 73, 94, 0.9);
-        color: #bdc3c7;
-    }
-
-    /* Custom scrollbar styling for dark mode */
-    .scale-notes::-webkit-scrollbar-track,
-    .scale-degrees::-webkit-scrollbar-track,
-    .chord-progression::-webkit-scrollbar-track,
-    .mode-info::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .scale-notes::-webkit-scrollbar-thumb,
-    .scale-degrees::-webkit-scrollbar-thumb,
-    .chord-progression::-webkit-scrollbar-thumb,
-    .mode-info::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    .scale-notes::-webkit-scrollbar-thumb:hover,
-    .scale-degrees::-webkit-scrollbar-thumb:hover,
-    .chord-progression::-webkit-scrollbar-thumb:hover,
-    .mode-info::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.5);
-    }
-}
-
-/* Manual dark mode toggle */
 body.dark-mode {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     color: #ecf0f1;
 }
+body.dark-mode header { background: rgba(44, 62, 80, 0.95); }
+body.dark-mode h1 { color: #ecf0f1; }
+body.dark-mode .root-selector label { color: #ecf0f1; }
+body.dark-mode .root-selector select { border: 2px solid #3498db; background: #34495e; color: #ecf0f1; }
+body.dark-mode .mode-card { background: #34495e; }
+body.dark-mode .mode-info { background: rgba(52, 73, 94, 0.95); }
+body.dark-mode .note, body.dark-mode .degree, body.dark-mode .chord { background: #2c3e50; color: #ecf0f1; }
+body.dark-mode .note.root { background: #3498db; }
+body.dark-mode .degree.altered { border-color: #e74c3c; color: #e74c3c; }
+body.dark-mode .interval-pattern { background: rgba(0, 0, 0, 0.3); color: #ecf0f1; }
+body.dark-mode .interval-pattern span { color: #3498db; }
+body.dark-mode .chord:hover { background: #3498db; }
+body.dark-mode .chord-tooltip { background: #ecf0f1; color: #333; }
+body.dark-mode .fretboard { background: rgba(52, 73, 94, 0.95); }
+body.dark-mode .fretboard-title { color: #ecf0f1; }
+body.dark-mode .fret { background: #2c3e50; border: 1px solid #34495e; }
+body.dark-mode .fret.active { background: #3498db; }
+body.dark-mode .fret.root-fret { background: #2980b9; }
+body.dark-mode .fret-number span { color: #bdc3c7; }
+body.dark-mode .description { background: rgba(52, 73, 94, 0.9); color: #bdc3c7; }
+body.dark-mode .scale-degrees-label { color: #ecf0f1; }
 
-body.dark-mode header {
-    background: rgba(44, 62, 80, 0.95);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-body.dark-mode h1 {
-    color: #ecf0f1;
-}
-
-body.dark-mode .root-selector label {
-    color: #ecf0f1;
-}
-
-body.dark-mode .root-selector select {
-    border: 2px solid #3498db;
-    background: #34495e;
-    color: #ecf0f1;
-}
-
-body.dark-mode .root-selector select:hover {
-    border-color: #2980b9;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-body.dark-mode .mode-card {
-    background: #34495e;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-body.dark-mode .mode-card:hover {
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-}
-
-body.dark-mode .mode-info {
-    background: rgba(52, 73, 94, 0.95);
-}
-
-body.dark-mode .scale-notes .note,
-body.dark-mode .degree {
-    background: #2c3e50;
-    color: #ecf0f1;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-body.dark-mode .note.root {
-    background: #3498db;
-    color: white;
-}
-
-body.dark-mode .degree.altered {
-    border-color: #e74c3c;
-    color: #e74c3c;
-}
-
-body.dark-mode .interval-pattern {
-    background: rgba(0, 0, 0, 0.3);
-    color: #ecf0f1;
-}
-
-body.dark-mode .interval-pattern span {
-    color: #3498db;
-}
-
-body.dark-mode .chord {
-    background: #2c3e50;
-    color: #ecf0f1;
-}
-
-body.dark-mode .chord:hover {
-    background: #3498db;
-    color: white;
-}
-
-body.dark-mode .chord-tooltip {
-    background: #ecf0f1;
-    color: #333;
-}
-
-body.dark-mode .fretboard {
-    background: rgba(52, 73, 94, 0.95);
-}
-
-body.dark-mode .fretboard-title {
-    color: #ecf0f1;
-}
-
-body.dark-mode .fret {
-    background: #2c3e50;
-    border: 1px solid #34495e;
-}
-
-body.dark-mode .fret.active {
-    background: #3498db;
-    color: white;
-}
-
-body.dark-mode .fret.root-fret {
-    background: #2980b9;
-    color: white;
-}
-
-body.dark-mode .fret-number span {
-    color: #bdc3c7;
-}
-
-body.dark-mode .description {
-    background: rgba(52, 73, 94, 0.9);
-    color: #bdc3c7;
-}
-
-/* Custom scrollbar styling for dark mode */
-body.dark-mode .scale-notes::-webkit-scrollbar-track,
-body.dark-mode .scale-degrees::-webkit-scrollbar-track,
-body.dark-mode .chord-progression::-webkit-scrollbar-track,
-body.dark-mode .mode-info::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .scale-notes::-webkit-scrollbar-thumb,
-body.dark-mode .scale-degrees::-webkit-scrollbar-thumb,
-body.dark-mode .chord-progression::-webkit-scrollbar-thumb,
-body.dark-mode .mode-info::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-body.dark-mode .scale-notes::-webkit-scrollbar-thumb:hover,
-body.dark-mode .scale-degrees::-webkit-scrollbar-thumb:hover,
-body.dark-mode .chord-progression::-webkit-scrollbar-thumb:hover,
-body.dark-mode .mode-info::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-
-body.dark-mode .scale-degrees-label {
-    color: #ecf0f1;
-}
+/* Dark Mode för pianot */
+body.dark-mode .piano-container { background: rgba(52, 73, 94, 0.95); }
+body.dark-mode .piano-title { color: #ecf0f1; }
+body.dark-mode .key.white { background: #bdc3c7; border-color: #2c3e50; }
+body.dark-mode .key.black { background: #2c3e50; }
+body.dark-mode .key.active { background: #3498db; }
+body.dark-mode .key.root { background: #e74c3c; }
