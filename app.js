@@ -102,8 +102,18 @@ const pianoKeys = [
 
 // Utility functions
 function getNoteIndex(note) {
-    return notes.indexOf(note.replace('b', '').replace('#', notes.includes(note) ? '' : '#'));
+    // Grundläggande indexhämtning
+    let index = notes.indexOf(note);
+    if (index !== -1) return index;
+
+    // Hantera b-förtecken
+    if (note.endsWith('b')) {
+        const flatMap = { 'Db': 1, 'Eb': 3, 'Gb': 6, 'Ab': 8, 'Bb': 10 };
+        return flatMap[note];
+    }
+    return -1; // Om noten inte hittas
 }
+
 
 function getNote(index) {
     return notes[index % 12];
@@ -121,15 +131,54 @@ function getChordName(rootNote, chordType) {
 
 function getChordTriad(rootNote, chordType, scaleNotes) {
     const rootIndex = scaleNotes.indexOf(rootNote);
+    if (rootIndex === -1) return []; // Säkerhetskontroll
     const third = scaleNotes[(rootIndex + 2) % 7];
     const fifth = scaleNotes[(rootIndex + 4) % 7];
     return [rootNote, third, fifth];
 }
 
+/**
+ * Korrigerar enharmoniska noter i en skala baserat på modens formel.
+ * Om en grad är sänkt (♭) och noten har ett kryss (#), omvandlas den till ett b-förtecken.
+ * @param {string[]} scaleNotes - Arrayen med skalans noter (t.ex. ['C', 'D', 'D#']).
+ * @param {object} mode - Mode-objektet som innehåller en `degrees`-sträng.
+ * @returns {string[]} - En ny array med de korrigerade tonnamnen.
+ */
+function correctEnharmonicNotes(scaleNotes, mode) {
+    const degrees = mode.degrees.split('-');
+    const correctedNotes = [...scaleNotes];
+
+    for (let i = 0; i < correctedNotes.length; i++) {
+        const degree = degrees[i];
+        const note = correctedNotes[i];
+
+        // Om graden ska vara sänkt och noten har ett #...
+        if (degree && degree.includes('♭') && note.includes('#')) {
+            // ...ersätt den med dess b-motsvarighet från noteEnharmonics-objektet.
+            if (noteEnharmonics[note]) {
+                correctedNotes[i] = noteEnharmonics[note];
+            }
+        }
+    }
+    return correctedNotes;
+}
+
 // Fretboard generation
-function generateFretboard(rootNote, intervals, modeIndex) {
+function generateFretboard(rootNote, mode, modeIndex) {
     const rootIndex = getNoteIndex(rootNote);
-    const scaleNotes = intervals.map(interval => (rootIndex + interval) % 12);
+    const scaleNoteIndices = mode.intervals.map(interval => (rootIndex + interval) % 12);
+    
+    // Generera och korrigera tonnamn
+    let scaleNotes = getScaleNotes(rootNote, mode.intervals);
+    scaleNotes = correctEnharmonicNotes(scaleNotes, mode);
+    
+    // Skapa en mappning från notindex till korrekt namn
+    const noteIndexToNameMap = {};
+    mode.intervals.forEach((interval, i) => {
+        const noteIndex = (rootIndex + interval) % 12;
+        noteIndexToNameMap[noteIndex] = scaleNotes[i];
+    });
+
     let html = `<div class="fretboard-title">Guitar Fretboard (first ${FRET_COUNT} frets)</div>`;
     html += `<div class="fretboard-diagram" id="fretboard-${modeIndex}">`;
     html += '<div class="fret-number"><span></span>';
@@ -141,27 +190,39 @@ function generateFretboard(rootNote, intervals, modeIndex) {
         html += `<div class="string-label">${string}</div>`;
         for (let fret = 0; fret <= FRET_COUNT; fret++) {
             const noteIndex = (stringNoteIndices[stringIndex] + fret) % 12;
-            const noteName = notes[noteIndex];
-            const isScaleNote = scaleNotes.includes(noteIndex);
+            const isScaleNote = scaleNoteIndices.includes(noteIndex);
+            const displayName = isScaleNote ? noteIndexToNameMap[noteIndex] : ''; // Använd korrekta namnet
             const isRoot = noteIndex === rootIndex;
             const className = isRoot ? 'fret root-fret' : (isScaleNote ? 'fret active' : 'fret');
-            html += `<div class="${className}" data-note-index="${noteIndex}">${isScaleNote ? noteName : ''}</div>`;
+            html += `<div class="${className}" data-note-index="${noteIndex}">${displayName}</div>`;
         }
     });
     html += '</div>';
     return html;
 }
 
-function updateFretboard(rootNote, intervals, modeIndex) {
+function updateFretboard(rootNote, mode, modeIndex) {
     const rootIndex = getNoteIndex(rootNote);
-    const scaleNotes = intervals.map(interval => (rootIndex + interval) % 12);
+    const scaleNoteIndices = mode.intervals.map(interval => (rootIndex + interval) % 12);
+
+    // Generera och korrigera tonnamn
+    let scaleNotes = getScaleNotes(rootNote, mode.intervals);
+    scaleNotes = correctEnharmonicNotes(scaleNotes, mode);
+
+    // Skapa en mappning från notindex till korrekt namn
+    const noteIndexToNameMap = {};
+    mode.intervals.forEach((interval, i) => {
+        const noteIndex = (rootIndex + interval) % 12;
+        noteIndexToNameMap[noteIndex] = scaleNotes[i];
+    });
+
     const fretboard = document.getElementById(`fretboard-${modeIndex}`);
     if (!fretboard) return;
     const frets = fretboard.querySelectorAll('.fret');
     frets.forEach(fret => {
         const noteIndex = parseInt(fret.getAttribute('data-note-index'));
-        const noteName = notes[noteIndex];
-        const isScaleNote = scaleNotes.includes(noteIndex);
+        const isScaleNote = scaleNoteIndices.includes(noteIndex);
+        const displayName = isScaleNote ? noteIndexToNameMap[noteIndex] : ''; // Använd korrekta namnet
         const isRoot = noteIndex === rootIndex;
         fret.className = 'fret';
         if (isRoot) {
@@ -169,7 +230,7 @@ function updateFretboard(rootNote, intervals, modeIndex) {
         } else if (isScaleNote) {
             fret.classList.add('active');
         }
-        fret.textContent = isScaleNote ? noteName : '';
+        fret.textContent = displayName;
     });
 }
 
@@ -194,23 +255,27 @@ function generatePianoKeyboard(rootNote, intervals, modeIndex) {
 
 // KORRIGERAD FUNKTION
 function updatePianoKeyboard(rootNote, intervals, modeIndex) {
-    const scaleNotes = getScaleNotes(rootNote, intervals);
+    const rootIndex = getNoteIndex(rootNote);
+    // Använd noternas index istället för deras namn för jämförelse
+    const scaleNoteIndices = intervals.map(interval => (rootIndex + interval) % 12);
+    
     const piano = document.getElementById(`piano-keys-${modeIndex}`);
     if (!piano) return;
 
     const keys = piano.querySelectorAll('.key');
     keys.forEach(key => {
         const keyNote = key.dataset.note;
-        
-        // Återställ klasser genom att först ta bort 'active' och 'root'
+        const keyNoteIndex = getNoteIndex(keyNote); // Konvertera tangentens namn till ett index
+
+        // Återställ klasser
         key.classList.remove('active', 'root');
 
-        // Lägg till klasser på nytt baserat på den nya skalan
-        const isScaleNote = scaleNotes.includes(keyNote);
+        // Jämför index istället för strängar
+        const isScaleNote = scaleNoteIndices.includes(keyNoteIndex);
         if (isScaleNote) {
             key.classList.add('active');
         }
-        const isRoot = keyNote === rootNote;
+        const isRoot = keyNoteIndex === rootIndex;
         if (isRoot) {
             key.classList.add('root');
         }
@@ -219,7 +284,10 @@ function updatePianoKeyboard(rootNote, intervals, modeIndex) {
 
 // Mode card generation
 function generateModeCard(rootNote, mode, modeIndex) {
-    const scaleNotes = getScaleNotes(rootNote, mode.intervals);
+    // 1. Hämta och korrigera skalans toner
+    let scaleNotes = getScaleNotes(rootNote, mode.intervals);
+    scaleNotes = correctEnharmonicNotes(scaleNotes, mode);
+
     const chords = scaleNotes.map((note, i) => getChordName(note, mode.chordTypes[i]));
     const degreesArray = mode.degrees.split('-');
     const degreeElements = degreesArray.map(degree => {
@@ -256,7 +324,7 @@ function generateModeCard(rootNote, mode, modeIndex) {
                 </div>
             </div>
             <div class="fretboard">
-                ${generateFretboard(rootNote, mode.intervals, modeIndex)}
+                ${generateFretboard(rootNote, mode, modeIndex)}
             </div>
             <div class="piano-container" id="piano-${modeIndex}">
                 ${generatePianoKeyboard(rootNote, mode.intervals, modeIndex)}
@@ -278,7 +346,10 @@ function updateModes() {
         ).join('');
     } else {
         modes.forEach((mode, index) => {
-            const scaleNotes = getScaleNotes(rootNote, mode.intervals);
+            // 1. Hämta och korrigera skalans toner
+            let scaleNotes = getScaleNotes(rootNote, mode.intervals);
+            scaleNotes = correctEnharmonicNotes(scaleNotes, mode);
+            
             const chords = scaleNotes.map((note, i) => getChordName(note, mode.chordTypes[i]));
             const degreesArray = mode.degrees.split('-');
             const degreeElements = degreesArray.map(degree => {
@@ -292,7 +363,6 @@ function updateModes() {
             ).join('');
             modeCard.querySelector('.scale-degrees').innerHTML = `<span class="scale-degrees-label">Scale Degrees:</span> ${degreeElements}`;
             
-            // KORRIGERAD RAD: Säkerställer att data-attribut finns kvar efter uppdatering
             modeCard.querySelector('.chord-progression').innerHTML = `
                 <strong>Chords:</strong>
                 ${chords.map((chord, i) => `
@@ -302,7 +372,7 @@ function updateModes() {
                 `).join('')}
             `;
             
-            updateFretboard(rootNote, mode.intervals, index);
+            updateFretboard(rootNote, mode, index);
             updatePianoKeyboard(rootNote, mode.intervals, index);
         });
     }
@@ -325,7 +395,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const mode = modes[modeIndex];
             const rootNote = document.getElementById('rootNote').value;
-            const scaleNotes = getScaleNotes(rootNote, mode.intervals);
+            
+            // Hämta och korrigera skaltoner för att bygga korrekt treklang
+            let scaleNotes = getScaleNotes(rootNote, mode.intervals);
+            scaleNotes = correctEnharmonicNotes(scaleNotes, mode);
+            
             const chordTriads = scaleNotes.map((note, i) => getChordTriad(note, mode.chordTypes[i], scaleNotes));
 
             globalChordTooltip.textContent = `Triad: ${chordTriads[chordIndex].join(' - ')}`;
