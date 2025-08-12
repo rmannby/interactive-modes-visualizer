@@ -307,7 +307,7 @@ h1 {
     line-height: 1.5;
 }
 
-/* Stilar för pianot */
+/* === UPPDATERADE STILAR FÖR PIANOT === */
 .piano-container {
     background: rgba(255, 255, 255, 0.95);
     padding: 15px;
@@ -332,6 +332,8 @@ h1 {
     border: 1px solid #333;
     box-sizing: border-box;
     transition: background-color 0.2s ease;
+    /* Positionering för markören */
+    position: relative;
 }
 
 .key.white {
@@ -351,15 +353,42 @@ h1 {
     z-index: 2;
 }
 
-.key.active {
-    background: #89f7fe;
+/* === NYA MARKÖRSTILAR === */
+
+/* Gemensam stil för alla markörer */
+.key.active::after,
+.key.root::after {
+    content: '';
+    position: absolute;
+    bottom: 8px; /* Avstånd från botten */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 3; /* Se till att markören ligger över tangenten */
 }
 
-.key.root {
-    background: #fda085;
+/* Markör för vanliga skaltoner */
+.key.active::after {
+    width: 14px;
+    height: 14px;
+    background-color: #27ae60; /* En tydlig grön färg */
 }
 
-/* Borttagna/justerade scrollbar-regler */
+/* Markör för grundtonen (mer framträdande) */
+.key.root::after {
+    width: 16px; /* Något större */
+    height: 16px;
+    background-color: #2ecc71; /* En ljusare grön */
+    border: 2px solid white; /* Vit kantlinje för att den ska sticka ut */
+}
+
+/* Justera kantlinjen för grundtonen på svarta tangenter */
+.key.black.root::after {
+    border-color: #333;
+}
+
+/* Scrollbar-regler */
 .piano-container::-webkit-scrollbar,
 .mode-info::-webkit-scrollbar {
     height: 6px;
@@ -384,7 +413,7 @@ h1 {
     .fretboard-diagram { font-size: 0.75rem; }
 }
 
-/* Dark Mode */
+/* === DARK MODE === */
 body.dark-mode {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     color: #ecf0f1;
@@ -416,5 +445,5 @@ body.dark-mode .piano-container { background: rgba(52, 73, 94, 0.95); }
 body.dark-mode .piano-title { color: #ecf0f1; }
 body.dark-mode .key.white { background: #bdc3c7; border-color: #2c3e50; }
 body.dark-mode .key.black { background: #2c3e50; }
-body.dark-mode .key.active { background: #3498db; }
-body.dark-mode .key.root { background: #e74c3c; }
+
+/* Inga fler ändringar behövs här eftersom markörerna ärver sina stilar */
